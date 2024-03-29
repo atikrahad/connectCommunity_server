@@ -1,11 +1,21 @@
-const express = require("express")
-const app = express()
-const port = process.env.PORT | 5000
+const express = require("express");
+const app = express();
+const dotenv = require("dotenv");
+dotenv.config();
+const mongoose = require("mongoose");
+const port = process.env.PORT | 5000;
 
-app.get("/", (req, res)=>{
-    res.send("BondBox server is running")
-})
+app.use(express.json());
 
-app.listen(port, ()=>{
-    console.log("server is running with port", port);
-})
+mongoose
+  .connect(`${process.env.URI}`)
+  .then(() => console.log("connected mongodb"))
+  .catch((err) => console.log(err));
+
+app.get("/", (req, res) => {
+  res.send("BondBox server is running");
+});
+
+app.listen(port, () => {
+  console.log("server is running with port", port);
+});
