@@ -9,22 +9,36 @@ user.post("/", async (req, res) => {
   const user = new Usermodel(req.body);
   await user
     .save()
-    .then((re) => res.status(200).send({
+    .then((re) =>
+      res.status(200).send({
         name: re.name,
         email: re.email,
-        tok: token(re._id) 
-    }))
+        tok: token(re._id),
+      })
+    )
     .catch((err) => res.status(500).send("server error"));
 });
 
-user.get("/", async(req, res)=> {
-    const query = req.query.email;
-    const myprofile = await Usermodel.findOne({email: query})
-    if(myprofile){
-        res.status(200).send(myprofile)
-    }else{
-        res.status(500).send('server error')
-    }
-})
+user.get("/", async (req, res) => {
+  const query = req.query.email;
+  const myprofile = await Usermodel.findOne({ email: query });
+  if (myprofile) {
+    res.status(200).send(myprofile);
+  } else {
+    res.status(500).send("server error");
+  }
+});
+
+user.put("/", async (req, res) => {
+  const query = req.query.email;
+  const info = req.body;
+  const updateData = await Usermodel.findOneAndUpdate({ email: query }, info, {
+    new: true,
+    upsert: true,
+    runValidators: true,
+  })
+    .then(() => res.send(updateData))
+    .catch(() => res.status(500).send("server error"));
+});
 
 module.exports = user;
