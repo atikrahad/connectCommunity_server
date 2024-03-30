@@ -9,9 +9,9 @@ const userShema = mongoose.Schema({
     type: String,
     required: true,
   },
-  password: {
-    type: String,
-    required: true,
+  joined: {
+    type: Date,
+    default: new Date(),
   },
   profilePic: {
     type: String,
@@ -20,6 +20,4 @@ const userShema = mongoose.Schema({
   },
 });
 
-const user = mongoose.model("user", userShema);
-
-module.exports = user;
+module.exports = userShema;
