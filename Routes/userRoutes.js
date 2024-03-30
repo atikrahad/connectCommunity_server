@@ -17,4 +17,14 @@ user.post("/", async (req, res) => {
     .catch((err) => res.status(500).send("server error"));
 });
 
+user.get("/", async(req, res)=> {
+    const query = req.query.email;
+    const myprofile = await Usermodel.findOne({email: query})
+    if(myprofile){
+        res.status(200).send(myprofile)
+    }else{
+        res.status(500).send('server error')
+    }
+})
+
 module.exports = user;
