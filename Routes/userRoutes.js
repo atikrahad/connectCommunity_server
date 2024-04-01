@@ -28,6 +28,24 @@ user.get("/", async (req, res) => {
     res.status(500).send("server error");
   }
 });
+user.get("/all", async (req, res) => {
+  const query = req.query.email;
+  const search = req.query.search;
+  console.log(query, search);
+
+  const keyword = {
+    $or: [
+      { name: { $regex: search, $options: "i" } },
+      { email: { $regex: search, $options: "i" } },
+    ],
+  };
+
+  const srearchedUsers = await Usermodel.find(keyword).find({
+    email: { $ne: query },
+  });
+  res.send(srearchedUsers);
+  
+});
 
 user.put("/", async (req, res) => {
   const query = req.query.email;
@@ -41,15 +59,14 @@ user.put("/", async (req, res) => {
     .catch(() => res.status(500).send("server error"));
 });
 
-user.get("/:id", async(req, res)=>{
-    const id = req.params.id
-    const userInfo = await Usermodel.findOne({_id: id})
-    if(userInfo){
-        res.status(200).send(userInfo)
-    }else{
-        res.status(500).send("server error")
-    }
-
-})
+user.get("/:id", async (req, res) => {
+  const id = req.params.id;
+  const userInfo = await Usermodel.findOne({ _id: id });
+  if (userInfo) {
+    res.status(200).send(userInfo);
+  } else {
+    res.status(500).send("server error");
+  }
+});
 
 module.exports = user;
