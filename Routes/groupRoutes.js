@@ -53,4 +53,18 @@ group.get("/", async (req, res) => {
   }
 });
 
+group.put("/addmembers/:id", async (req, res) => {
+  const groupId = req.params.id;
+  const admin = req.body.addminId;
+  const neweMember = req.body.newMember;
+
+  const group = await groupModel.findOneAndUpdate(
+    { _id: groupId, groupAdmin: [admin] },
+    {$push: {
+      members: neweMember
+    }}
+  );
+res.status(200).json(group)
+});
+
 module.exports = group;
