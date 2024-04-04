@@ -27,14 +27,30 @@ group.post("/", async (req, res) => {
   }
 });
 
+group.get("/:id", async (req, res) => {
+  const id = req.params.id;
+  const group = await groupModel
+    .findOne({ _id: id })
+    .populate("members", "name profilePic")
+    .populate("groupAdmin", "name profilePic");
 
-group.get("/:id", async (req, res)=>{
-  const id = req.params.id
-  const group = await groupModel.findOne({_id: id})
-  .populate('members', "name profilePic")
-  .populate('groupAdmin', "name profilePic")
-  
-  res.send(group)
-})
+  res.send(group);
+});
+
+group.get("/", async (req, res) => {
+  const search = req.query.search;
+
+  if (search !== "") {
+    const groups = await groupModel
+      .find({
+        groupName: { $regex: search, $options: "i" },
+      })
+      .sort({ createdAt: -1 });
+    res.send(groups);
+  } else {
+    const groups = await groupModel.find().sort({ createdAt: -1 });
+    res.send(groups);
+  }
+});
 
 module.exports = group;
