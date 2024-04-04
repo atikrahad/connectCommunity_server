@@ -1,7 +1,8 @@
 const express = require("express");
 const group = express.Router();
 const groupModel = require("../Models/groups");
-const userMod = require("../Models/usermodel");
+
+// create a group
 
 group.post("/", async (req, res) => {
   const queiry = req.query.id;
@@ -27,6 +28,8 @@ group.post("/", async (req, res) => {
   }
 });
 
+// get a group by id
+
 group.get("/:id", async (req, res) => {
   const id = req.params.id;
   const group = await groupModel
@@ -36,6 +39,8 @@ group.get("/:id", async (req, res) => {
 
   res.send(group);
 });
+
+// get all group and search group
 
 group.get("/", async (req, res) => {
   const search = req.query.search;
@@ -52,6 +57,8 @@ group.get("/", async (req, res) => {
     res.send(groups);
   }
 });
+
+// add a member in group
 
 group.put("/addmembers/:id", async (req, res) => {
   const groupId = req.params.id;
@@ -77,72 +84,76 @@ group.put("/addmembers/:id", async (req, res) => {
   }
 });
 
+// leave a member grom group
+
+group.put("/leave/:id", async (req, res) => {
+  const groupId = req.params.id;
+  const leaveId = req.body.leaveId;
+
+  const group = await groupModel.findOne({
+    _id: groupId,
+    groupAdmin: [leaveId],
+  });
+
+  if (group) {
+    res.status(400);
+    throw new Error("server error");
+  } else {
+    const leaveMember = await groupModel.findOneAndUpdate(
+      { _id: groupId },
+      {
+        $pull: {
+          members: leaveId,
+        },
+      },
+      { new: true }
+    );
+    res.send(200).json(leaveMember);
+  }
+});
+
+// remove a member from the group
+
 group.put("/removemembers/:id", async (req, res) => {
   const groupId = req.params.id;
   const admin = req.body.addminId;
   const removeMember = req.body.removeMember;
 
-  const group = await groupModel
-    .findOneAndUpdate(
-      { _id: groupId, groupAdmin: [admin] },
-      {
-        $pull: {
-          members: removeMember,
-        },
+  const group = await groupModel.findOneAndUpdate(
+    { _id: groupId, groupAdmin: [admin] },
+    {
+      $pull: {
+        members: removeMember,
       },
-      { new: true }
-    )
-    if (!group) {
-      res.status(400);
-      throw new Error("server error");
-    } else {
-      res.status(200).json(group);
-    }
+    },
+    { new: true }
+  );
+  if (!group) {
+    res.status(400);
+    throw new Error("server error");
+  } else {
+    res.status(200).json(group);
+  }
 });
 
-group.put("/updategroupcover/:id", async (req, res) => {
+// update a group
+
+group.put("/updategroup/:id", async (req, res) => {
   const groupId = req.params.id;
   const admin = req.body.addminId;
-  const newGroupCover = req.body.groupCover;
+  const updatevalue = req.body.update;
 
-  const group = await groupModel
-    .findOneAndUpdate(
-      { _id: groupId, groupAdmin: [admin] },
-      {
-        $set: {
-          groupCover: newGroupCover,
-        },
-      },
-      { new: true }
-    )
-    if (!group) {
-      res.status(400);
-      throw new Error("server error");
-    } else {
-      res.status(200).json(group);
-    }
-});
-group.put("/updategrouppic/:id", async (req, res) => {
-  const groupId = req.params.id;
-  const admin = req.body.addminId;
-  const newGroupPic = req.body.groupPic;
-
-  const group = await groupModel
-    .findOneAndUpdate(
-      { _id: groupId, groupAdmin: [admin] },
-      {
-        $set: {
-          groupPic: newGroupPic,
-        },
-      },
-      { new: true }
-    )
-    if (!group) {
-      res.status(400);
-      throw new Error("server error");
-    } else {
-      res.status(200).json(group);
-    }
+  const group = await groupModel.findOneAndUpdate(
+    { _id: groupId, groupAdmin: [admin] },
+    updatevalue,
+    { new: true }
+  );
+  if (!group) {
+    res.status(400);
+    throw new Error("server error");
+  } else {
+    res.status(200).json(group);
+  }
 });
 
 module.exports = group;
