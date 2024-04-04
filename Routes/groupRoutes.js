@@ -27,4 +27,14 @@ group.post("/", async (req, res) => {
   }
 });
 
+
+group.get("/:id", async (req, res)=>{
+  const id = req.params.id
+  const group = await groupModel.findOne({_id: id})
+  .populate('members', "name profilePic")
+  .populate('groupAdmin', "name profilePic")
+  
+  res.send(group)
+})
+
 module.exports = group;
