@@ -1,8 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const user = express.Router();
-const userschema = require("../Models/usermodel");
-const Usermodel = mongoose.model("user", userschema);
+const Usermodel = require("../Models/usermodel");
 const token = require("../config/jwt");
 
 user.post("/", async (req, res) => {

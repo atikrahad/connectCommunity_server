@@ -28,4 +28,6 @@ const userShema = mongoose.Schema({
   socialmedia: { type: Array },
 });
 
-module.exports = userShema;
+const userMolel = mongoose.model("user", userShema)
+
+module.exports = userMolel;

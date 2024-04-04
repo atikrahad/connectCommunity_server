@@ -13,6 +13,12 @@ const groupScema = mongoose.Schema(
         ref: "user",
       },
     ],
+    groupAdmin: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "user",
+      },
+    ],
     description: {
       type: String,
       required: true,
