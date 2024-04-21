@@ -6,15 +6,16 @@ chat.post("/", async (req, res) => {
   const id1 = req.body.id1;
   const id2 = req.body.id2;
 
-  var isChat = await chatmodel.find({
-    groupChat: false,
-    $and: [
-      { users: { $elemMatch: { $eq: id1 } } },
-      { users: { $elemMatch: { $eq: id2 } } },
-    ],
-  })
-  .populate("users", "name profilePic _id")
-  .populate("letestMessage")
+  var isChat = await chatmodel
+    .find({
+      groupChat: false,
+      $and: [
+        { users: { $elemMatch: { $eq: id1 } } },
+        { users: { $elemMatch: { $eq: id2 } } },
+      ],
+    })
+    .populate("users", "name profilePic _id")
+    .populate("letestMessage");
 
   isChat = await User.populate(isChat, {
     path: "latestMessage.sender",
@@ -42,7 +43,6 @@ chat.post("/", async (req, res) => {
       throw new Error(error.message);
     }
   }
-
 });
 
 module.exports = chat;

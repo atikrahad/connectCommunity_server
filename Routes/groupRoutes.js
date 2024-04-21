@@ -7,15 +7,17 @@ const groupModel = require("../Models/groups");
 group.post("/", async (req, res) => {
   const queiry = req.query.id;
   const info = req.body;
-  const mem = JSON.parse(info.member);
+  const mem = info.member
   mem.push(queiry);
 
   try {
     const createGroup = await groupModel.create({
-      groupName: info.name,
+      groupName: info.groupName,
       members: mem,
       description: info.description,
       groupAdmin: [queiry],
+      groupPic: info.groupPic,
+      groupCover: info.groupCover
     });
 
     const group = await groupModel
@@ -39,6 +41,19 @@ group.get("/:id", async (req, res) => {
 
   res.send(group);
 });
+
+// get my groups 
+
+group.get("/mygroup/:id", async(req, res)=>{
+  const id = req.params.id
+
+  const mygroup = await groupModel.find({members: id})
+  if(mygroup){
+    res.send(mygroup)
+  }else{
+    throw new Error("server error")
+  }
+})
 
 // get all group and search group
 

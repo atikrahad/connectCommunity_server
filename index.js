@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+const cors = require("cors")
 require("dotenv").config();
 const mongoose = require("mongoose");
 const port = process.env.PORT | 5000;
@@ -7,6 +8,7 @@ const handleUser = require("./Routes/userRoutes");
 const handleGroup = require("./Routes/groupRoutes");
 const handleChat = require("./Routes/chatRoutes")
 
+app.use(cors())
 app.use(express.json());
 
 mongoose

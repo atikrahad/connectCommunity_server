@@ -18,8 +18,11 @@ const userShema = mongoose.Schema({
     default:
       "https://i.ibb.co/xsH1Q1b/default-avatar-profile-icon-social-600nw-1677509740.webp",
   },
-  coverPic: {},
-  dateOfbirth: {type: Date},
+  coverPic: {
+    type: String,
+    default: "https://mewitti.com/wp-content/themes/miyazaki/assets/images/default-fallback-image.png"
+  },
+  dateOfBirth: {type: Date},
   address: { type: Array },
   phone: { type: Array },
   education: { type: Array },
